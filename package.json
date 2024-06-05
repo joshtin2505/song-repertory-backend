@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "dev": "ts-node-dev src/index.ts",
+    "start": "node build/index.js",
+    "deploy": "pnpm install && pnpm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pretcheck": "prettier . --check",
+    "pretwrite": "prettier . -w"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +19,7 @@
     "@types/express": "^4.17.21",
     "@types/node": "^20.14.2",
     "prisma": "^5.15.0",
-    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5"
   },
   "dependencies": {
