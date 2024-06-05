@@ -12,3 +12,118 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+model Song { 
+  song_id     String        @id @default(uuid())
+  title       String
+  description String?
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+  SongArtists SongArtist[]
+  Notes       Note[]
+  AudioClips  AudioClip[]
+  Links       Link[]
+  SongTags    SongTag[]
+}
+
+model Book {
+  book_id          String       @id @default(uuid())
+  content          String
+  last_modified_at DateTime  @default(now())
+  Notes            Note[]
+
+}
+
+enum Plan {
+  musician
+  band
+  orchestra
+}
+
+model Artist {
+  artist_id   String         @id @default(uuid())
+  name        String
+  email       String      @unique
+  username    String      @unique
+  password    String
+  photo_url   String?
+  bio         String?
+  phone       String?
+  plan        Plan     @default(musician) 
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  SongArtists SongArtist[]
+  Notes       Note[]
+  AudioClips  AudioClip[]
+  Links       Link[]
+}
+
+model SongArtist {
+  song_artist_id String     @id @default(uuid())
+  song_id        String
+  artist_id      String
+  role           String
+
+  song   Song   @relation(fields: [song_id], references: [song_id], onDelete: Cascade)
+  artist Artist @relation(fields: [artist_id], references: [artist_id], onDelete: Cascade)
+
+  @@unique([song_id, artist_id])
+}
+
+model Note {
+  note_id    String      @id @default(uuid())
+  song_id    String
+  artist_id  String
+  book_id    String?
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  shared     Boolean  @default(false)
+
+  song   Song   @relation(fields: [song_id], references: [song_id], onDelete: Cascade)
+  artist Artist @relation(fields: [artist_id], references: [artist_id], onDelete: Cascade)
+    book   Book?   @relation(fields: [book_id], references: [book_id], onDelete: SetNull)
+  }
+
+model AudioClip {
+  audio_id   String      @id @default(uuid())
+  song_id    String
+  artist_id  String
+  file_path  String
+  shared     Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  song   Song   @relation(fields: [song_id], references: [song_id], onDelete: Cascade)
+  artist Artist @relation(fields: [artist_id], references: [artist_id], onDelete: Cascade)
+}
+
+model Link {
+  link_id    String      @id @default(uuid())
+  song_id    String
+  artist_id  String
+  url        String
+  title String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  shared     Boolean  @default(false)
+
+  song   Song   @relation(fields: [song_id], references: [song_id], onDelete: Cascade)
+  artist Artist @relation(fields: [artist_id], references: [artist_id], onDelete: Cascade)
+}
+
+model Tag {
+  tag_id   String      @id @default(uuid())
+  name     String   @unique
+  SongTags SongTag[]
+}
+
+model SongTag {
+  song_tag_id String   @id @default(uuid())
+  song_id     String
+  tag_id      String
+
+  song Song @relation(fields: [song_id], references: [song_id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tag_id], references: [tag_id], onDelete: Cascade)
+
+  @@unique([song_id, tag_id])
+}
