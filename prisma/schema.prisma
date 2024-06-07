@@ -4,6 +4,8 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// prisma migrate dev --name init --preview-feature
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -39,6 +41,9 @@ enum Plan {
   orchestra
 }
 
+// Artist contiene información general sobre el usuario y sus relaciones con otros datos, 
+// mientras que el modelo Profile contiene información más específica sobre el usuario, 
+// como sus credenciales de inicio de sesión y detalles de contacto.
 model Artist {
   artist_id   String         @id @default(uuid())
   plan        Plan     @default(musician) 
