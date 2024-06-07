@@ -41,13 +41,6 @@ enum Plan {
 
 model Artist {
   artist_id   String         @id @default(uuid())
-  name        String
-  email       String      @unique
-  username    String      @unique
-  password    String
-  photo_url   String?
-  bio         String?
-  phone       String?
   plan        Plan     @default(musician) 
   created_at  DateTime    @default(now())
   updated_at  DateTime    @updatedAt
@@ -55,6 +48,22 @@ model Artist {
   Notes       Note[]
   AudioClips  AudioClip[]
   Links       Link[]
+  Profile     Profile?
+}
+model Profile {
+  profile_id String @id @default(uuid())
+  artist_id  String @unique
+  name        String
+  email       String      @unique
+  username    String      @unique
+  password    String
+  photo_url   String?
+  bio         String?
+  phone       String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  artist Artist @relation(fields: [artist_id], references: [artist_id], onDelete: Cascade)
 }
 
 model SongArtist {
